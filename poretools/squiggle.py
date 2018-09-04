@@ -70,7 +70,7 @@ def run(parser, args):
 
     fast5_set = Fast5File.Fast5FileSet(args.files)
 
-    first_fast5 = fast5_set.next()
+    first_fast5 = next(fast5_set)
     for fast5 in fast5_set:
         # only create a squiggle plot for multiple reads if saving to file.
         if args.saveas is None:
