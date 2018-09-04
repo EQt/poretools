@@ -103,7 +103,7 @@ class Fast5FileSet(object):
 	def __next__(self):
 		try:
 			return Fast5File(next(self.files), self.group)
-		except Exception as e:
+		except Exception:
 			# cleanup our mess
 			if self.set_type == FAST5SET_TARBALL:
 				shutil.rmtree(PORETOOLS_TMPDIR)
@@ -223,7 +223,7 @@ class Fast5File(object):
 		try:
 			self.hdf5file = h5py.File(self.filename, 'r')
 			return True
-		except Exception as e:
+		except Exception:
 			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
 
@@ -429,7 +429,7 @@ class Fast5File(object):
 				# Unix time stamp from MinKNOW < 1.4
 				timestamp = int(self.keyinfo['tracking_id'].attrs['exp_start_time'])
 			return timestamp
-		except KeyError as e:
+		except KeyError:
 			return None
 
 	def get_channel_number(self):
@@ -776,7 +776,7 @@ Please report this error (with the offending file) to:
 
 		try:
 			return self.keyinfo['context_tags'].attrs['user_filename_input']
-		except Exception as e:
+		except Exception:
 			return None
 
 	def get_sample_frequency(self):
@@ -790,7 +790,7 @@ Please report this error (with the offending file) to:
 
 		try:
 			return int(self.keyinfo['context_tags'].attrs['sample_frequency'])
-		except Exception as e:
+		except Exception:
 			return None
 
 	def get_script_name(self):
@@ -799,7 +799,7 @@ Please report this error (with the offending file) to:
 			self.have_metdata = True
 		try:
 			return self.keyinfo['tracking_id'].attrs['exp_script_name']
-		except Exception as e:
+		except Exception:
 			return None
 
 	def get_template_events_count(self):
@@ -809,7 +809,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			return len(table['Events'][()])
-		except Exception as e:
+		except Exception:
 			return 0
 
 	def get_complement_events_count(self):
@@ -819,7 +819,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			return len(table['Events'][()])
-		except Exception as e:
+		except Exception:
 			return 0
 
 	def is_high_quality(self):
@@ -850,7 +850,7 @@ Please report this error (with the offending file) to:
 					return 'template'
 				else:
 					return 'complement'
-		except Exception as e:
+		except Exception:
 			return None
 
 	####################################################################
@@ -867,7 +867,7 @@ Please report this error (with the offending file) to:
 				fq = formats.Fastq(table['Fastq'][()])
 				fq.name += " " + self.filename
 				self.fastqs[id] = fq
-			except Exception as e:
+			except Exception:
 				pass
 
 	def _extract_fastas_from_fast5(self):
@@ -880,7 +880,7 @@ Please report this error (with the offending file) to:
 				fa = formats.Fasta(table['Fastq'][()])
 				fa.name += " " + self.filename
 				self.fastas[id] = fa
-			except Exception as e:
+			except Exception:
 				pass
 
 	def _extract_template_events(self):
@@ -890,7 +890,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			self.template_events = [Event(x) for x in table['Events'][()]]
-		except Exception as e:
+		except Exception:
 			self.template_events = []
 
 	def _extract_complement_events(self):
@@ -900,7 +900,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			self.complement_events = [Event(x) for x in table['Events'][()]]
-		except Exception as e:
+		except Exception:
 			self.complement_events = []
 
 	def _extract_pre_basecalled_events(self):
@@ -919,9 +919,9 @@ Please report this error (with the offending file) to:
 	def _get_metadata(self):
 		try:
 			self.keyinfo = self.hdf5file['/UniqueGlobalKey']
-		except Exception as e:
+		except Exception:
 			try:
 				self.keyinfo = self.hdf5file['/Key']
-			except Exception as e:
+			except Exception:
 				self.keyinfo = None
 				logger.warning("Cannot find keyinfo. Exiting.\n")
