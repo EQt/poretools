@@ -5,7 +5,6 @@ import tarfile
 import shutil
 import h5py
 import dateutil.parser
-import datetime
 import time
 
 #logging
