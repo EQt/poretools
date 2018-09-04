@@ -41,7 +41,7 @@ def run_subtool(parser, args):
     elif args.command == 'times':
         import times as submodule
     elif args.command == 'squiggle':
-        import squiggle as submodule
+        import poretools.squiggle as submodule
     elif args.command == 'winner':
         import winner as submodule
     elif args.command == 'yield_plot':
