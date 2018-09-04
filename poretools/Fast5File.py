@@ -76,6 +76,9 @@ class Fast5DirHandler(object):
         else:
             raise StopIteration()
 
+    # https://portingguide.readthedocs.io/en/latest/iterators.html
+    next = __next__  # for Python 2
+
 
 class Fast5FileSet(object):
 
@@ -108,6 +111,8 @@ class Fast5FileSet(object):
 			if self.set_type == FAST5SET_TARBALL:
 				shutil.rmtree(PORETOOLS_TMPDIR)
 			raise StopIteration
+
+	next = __next__	 # for Python 2
 
 	def _extract_fast5_files(self):
 
